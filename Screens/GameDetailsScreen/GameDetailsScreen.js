@@ -8,7 +8,7 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 
-export default class  GameDetailsScreen extends React.Component {
+export default class GameDetailsScreen extends React.Component {
     static navigationOptions = {
         title: 'Video Game',
     };

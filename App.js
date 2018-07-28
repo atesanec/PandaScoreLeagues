@@ -9,8 +9,10 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from  'react-navigation';
-import GamesListScreen from './Screens/GamesListScreen/GamesListScreen.js';
-import GameDetailsScreen from './Screens/GameDetailsScreen/GameDetailsScreen.js';
+import {Provider, Observer} from 'mobx-react'
+import GamesListScreen from './Screens/GamesListScreen/GamesListScreen';
+import GameDetailsScreen from './Screens/GameDetailsScreen/GameDetailsScreen';
+import allStores from './Stores/StoreMap'
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -21,9 +23,12 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
-    render() {
-        return (
-            <RootNavigationStack />
+    render()
+    {
+        return(
+            <Provider {...allStores}>
+                <RootNavigationStack />
+            </Provider>
         );
     }
 }
