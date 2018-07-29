@@ -1,14 +1,16 @@
 /**
- * Store of games list
- *
- * @format
- * @flow
- */
+* Store of leagues list
+*
+* @format
+* @flow
+*/
+
 import PandaScoreBaseStore from "./PandaScoreBaseStore";
 import {observable, action, flow} from 'mobx';
 
-export default class GamesListStore extends PandaScoreBaseStore {
-    @observable gamesList = [];
+export default class LeaguesListStore extends PandaScoreBaseStore {
+    @observable leaguesList = [];
+    @observable isLoading = false;
 
     @action loadGameList = flow(function * () {
         this.isLoading = true;
@@ -17,14 +19,14 @@ export default class GamesListStore extends PandaScoreBaseStore {
             yield fetch(GamesListStore.makeRequestURL('/videogames')).then(
                 (response) => {response.json().then(
                     json => {
-                        this.gamesList = json;
-                        this.isLoading = false
+                        this.gamesList = json
                     }
                 )});
         } catch (err) {
             this.error = err;
-            this.isLoading = false;
             console.warn(err)
         }
+
+        this.isLoading = false
     })
 }
