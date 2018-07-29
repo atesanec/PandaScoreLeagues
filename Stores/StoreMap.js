@@ -6,9 +6,9 @@
  */
 
 import GamesListStore from './GamesListStore';
-import LeaguesListStore from "./LeaguesListStore";
+import LeaguesListStore from './LeaguesListStore';
 
 export default {
-    gamesListStore: new GamesListStore(),
-    leaguesListStore: new LeaguesListStore(),
+  gamesListStore: new GamesListStore(),
+  leaguesListStore: new LeaguesListStore(),
 };
