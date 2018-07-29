@@ -7,19 +7,21 @@
 
 import PandaScoreBaseStore from "./PandaScoreBaseStore";
 import {observable, action, flow} from 'mobx';
+import Path from 'path'
 
 export default class LeaguesListStore extends PandaScoreBaseStore {
     @observable leaguesList = [];
-    @observable isLoading = false;
 
-    @action loadGameList = flow(function * () {
+    @action loadLeaguesList = flow(function * (gameId: number) {
+        this.leaguesList = [];
         this.isLoading = true;
 
         try {
-            yield fetch(GamesListStore.makeRequestURL('/videogames')).then(
+            let requestPath = Path.join('/', '/videogames', gameId.toString(), 'leagues');
+            yield fetch(LeaguesListStore.makeRequestURL(requestPath)).then(
                 (response) => {response.json().then(
                     json => {
-                        this.gamesList = json
+                        this.leaguesList = json
                     }
                 )});
         } catch (err) {

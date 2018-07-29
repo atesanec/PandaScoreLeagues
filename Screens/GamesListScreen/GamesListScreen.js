@@ -22,7 +22,6 @@ export default GamesListScreen = inject('gamesListStore')(observer(
 
         _renderListItem({item}) {
             return (<GameListItem id={item.id} title={item.name} onPressItem={this._onPressItem.bind(this)}/>)
-
         };
 
         _onPressItem(gameId: number) {
