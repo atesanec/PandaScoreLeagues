@@ -27,7 +27,6 @@ export default class GamesListStore extends PandaScoreBaseStore {
       } catch (err) {
         this.error = err;
         this.isLoading = false;
-        console.warn(err);
       }
     })
 }

@@ -10,52 +10,69 @@ import {
   View, FlatList, Linking,
 } from 'react-native';
 import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
 import LeagueInfoItem from './LeagueInfoItem';
+import LeaguesListStore from '../../Stores/LeaguesListStore';
 
-export default GameDetailsScreen = inject('leaguesListStore')(observer(
+
+const GameDetailsScreen = inject('leaguesListStore')(observer(
   class GameDetailsScreen extends React.Component {
         static navigationOptions = {
           title: 'Game Info',
         };
 
-        componentDidMount() {
-          const gameId = this.props.navigation.getParam('gameId', null);
-          this.props.leaguesListStore.loadLeaguesList(gameId);
-        }
+      static propTypes = {
+        navigation: PropTypes.shape({
+          getParam: PropTypes.func.isRequired,
+        }).isRequired,
+        leaguesListStore: PropTypes.instanceOf(LeaguesListStore).isRequired,
+      };
 
-        _renderLeagueListItem({ item }) {
-          const title = item.name;
-          const imageURL = item.image_url;
-          const websiteURL = item.url;
-          return (
-            <LeagueInfoItem
-              id={item.id}
-              title={title}
-              imageURL={imageURL}
-              websiteURL={websiteURL}
-              onPressItem={this._onPressItem.bind(this)}
+
+      componentDidMount() {
+        const { navigation } = this.props;
+        const gameId = navigation.getParam('gameId', null);
+
+        const { leaguesListStore } = this.props;
+        leaguesListStore.loadLeaguesList(gameId);
+      }
+
+      onPressItem = (itemId: number) => {
+        const { leaguesListStore: { leaguesList } } = this.props;
+        const item = leaguesList.find(elem => elem.id === itemId);
+        if (item.url) {
+          Linking.openURL(item.url);
+        }
+      };
+
+      renderLeagueListItem = ({ item }) => {
+        const title = item.name;
+        const imageURL = item.image_url;
+        const websiteURL = item.url;
+        return (
+          <LeagueInfoItem
+            id={item.id}
+            title={title}
+            imageURL={imageURL}
+            websiteURL={websiteURL}
+            onPressItem={this.onPressItem}
+          />
+        );
+      };
+
+      render() {
+        const { leaguesListStore: { leaguesList } } = this.props;
+        return (
+          <View>
+            <FlatList
+              data={leaguesList}
+              renderItem={this.renderLeagueListItem}
+              keyExtractor={item => item.id.toString()}
             />
-          );
-        }
-
-        _onPressItem(itemId: number) {
-          const item = this.props.leaguesListStore.leaguesList.find((item, i, list) => item.id === itemId);
-          if (item.url) {
-            Linking.openURL(item.url);
-          }
-        }
-
-        render() {
-          const dataSource = this.props.leaguesListStore.leaguesList;
-          return (
-            <View>
-              <FlatList
-                data={dataSource}
-                renderItem={this._renderLeagueListItem.bind(this)}
-                keyExtractor={(item, i) => item.id.toString()}
-              />
-            </View>
-          );
-        }
+          </View>
+        );
+      }
   },
 ));
+
+export default GameDetailsScreen;

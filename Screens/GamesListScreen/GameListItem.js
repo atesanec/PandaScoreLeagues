@@ -7,19 +7,28 @@
 
 import React, { PureComponent } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity,
+  Text, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class GameListItem extends PureComponent {
-  _onItemPress() {
-    this.props.onPressItem(this.props.id);
-  }
+  static propTypes = {
+    onPressItem: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+  };
+
+  onItemPress = () => {
+    const { onPressItem, id } = this.props;
+    onPressItem(id);
+  };
 
   render() {
+    const { title } = this.props;
     return (
-      <TouchableOpacity onPress={this._onItemPress.bind(this)}>
+      <TouchableOpacity onPress={this.onItemPress}>
         <Text>
-          {this.props.title}
+          {title}
         </Text>
       </TouchableOpacity>
     );

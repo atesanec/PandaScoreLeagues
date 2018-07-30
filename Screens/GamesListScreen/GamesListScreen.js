@@ -10,37 +10,50 @@ import {
   View, FlatList,
 } from 'react-native';
 import { inject, observer } from 'mobx-react';
+import PropTypes from 'prop-types';
 import GameListItem from './GameListItem';
+import GamesListStore from '../../Stores/GamesListStore';
 
-export default GamesListScreen = inject('gamesListStore')(observer(
+const GamesListScreen = inject('gamesListStore')(observer(
   class GamesListScreen extends Component {
-        static navigationOptions = {
-          title: 'Games List',
-        };
+    static navigationOptions = {
+      title: 'Games List',
+    };
 
-        componentDidMount() {
-          this.props.gamesListStore.loadGameList();
-        }
+    static propTypes = {
+      gamesListStore: PropTypes.instanceOf(GamesListStore).isRequired,
+      navigation: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+      }).isRequired,
+    };
 
-        _renderListItem({ item }) {
-          return (<GameListItem id={item.id} title={item.name} onPressItem={this._onPressItem.bind(this)} />);
-        }
+    componentDidMount() {
+      const { gamesListStore } = this.props;
+      gamesListStore.loadGameList();
+    }
 
-        _onPressItem(gameId: number) {
-          this.props.navigation.push('GameDetailsScreen', { gameId });
-        }
+    onPressItem = (gameId: number) => {
+      const { navigation } = this.props;
+      navigation.push('GameDetailsScreen', { gameId });
+    };
 
-        render() {
-          const dataSource = this.props.gamesListStore.gamesList;
-          return (
-            <View>
-              <FlatList
-                data={dataSource}
-                renderItem={this._renderListItem.bind(this)}
-                keyExtractor={(item, i) => item.id.toString()}
-              />
-            </View>
-          );
-        }
+    renderListItem = ({ item }) => (
+      <GameListItem id={item.id} title={item.name} onPressItem={this.onPressItem} />
+    );
+
+    render() {
+      const { gamesListStore: { gamesList: dataSource } } = this.props;
+      return (
+        <View>
+          <FlatList
+            data={dataSource}
+            renderItem={this.renderListItem}
+            keyExtractor={item => item.id.toString()}
+          />
+        </View>
+      );
+    }
   },
 ));
+
+export default GamesListScreen;

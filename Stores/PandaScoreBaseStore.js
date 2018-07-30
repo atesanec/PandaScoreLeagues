@@ -21,8 +21,8 @@ export default class PandaScoreBaseStore {
     static makeRequestURL = (path: string, params: any = {}) => {
       const requestURL: URL = URL(PandaScoreBaseStore.apiEndPointName);
 
-      params.token = PandaScoreBaseStore.apiKey;
-      requestURL.query = queryString.stringify(params);
+      const fullParams = Object.assign({ token: PandaScoreBaseStore.apiKey }, params);
+      requestURL.query = queryString.stringify(fullParams);
       requestURL.pathname = path;
 
       return requestURL.toString();

@@ -5,30 +5,32 @@
 * @flow
 */
 
-import PandaScoreBaseStore from "./PandaScoreBaseStore";
-import {observable, action, flow} from 'mobx';
-import Path from 'path'
+import { observable, action, flow } from 'mobx';
+import Path from 'path';
+import PandaScoreBaseStore from './PandaScoreBaseStore';
 
 export default class LeaguesListStore extends PandaScoreBaseStore {
     @observable leaguesList = [];
 
-    @action loadLeaguesList = flow(function * (gameId: number) {
-        this.leaguesList = [];
-        this.isLoading = true;
+    @action loadLeaguesList = flow(function* (gameId: number) {
+      this.leaguesList = [];
+      this.isLoading = true;
 
-        try {
-            let requestPath = Path.join('/', '/videogames', gameId.toString(), 'leagues');
-            yield fetch(LeaguesListStore.makeRequestURL(requestPath)).then(
-                (response) => {response.json().then(
-                    json => {
-                        this.leaguesList = json
-                    }
-                )});
-        } catch (err) {
-            this.error = err;
-            console.warn(err)
-        }
+      try {
+        const requestPath = Path.join('/', '/videogames', gameId.toString(), 'leagues');
+        yield fetch(LeaguesListStore.makeRequestURL(requestPath)).then(
+          (response) => {
+            response.json().then(
+              (json) => {
+                this.leaguesList = json;
+              },
+            );
+          },
+        );
+      } catch (err) {
+        this.error = err;
+      }
 
-        this.isLoading = false
+      this.isLoading = false;
     })
 }

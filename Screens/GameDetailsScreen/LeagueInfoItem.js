@@ -9,6 +9,7 @@ import React, { PureComponent } from 'react';
 import {
   Text, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   leagueIcon: {
@@ -19,31 +20,44 @@ const styles = StyleSheet.create({
 });
 
 export default class LeagueInfoItem extends PureComponent {
-  _onPressItem() {
-    this.props.onPressItem(this.props.id);
-  }
+  static propTypes = {
+    onPressItem: PropTypes.func.isRequired,
+    id: PropTypes.number.isRequired,
+    imageURL: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    websiteURL: PropTypes.string,
+  };
+
+  static defaultProps = {
+    imageURL: null,
+    websiteURL: null,
+  };
+
+  onPressItem = () => {
+    const { id, onPressItem } = this.props;
+    onPressItem(id);
+  };
 
   render() {
-    let iconSource = this.props.imageURL;
+    let { imageURL: iconSource } = this.props;
     if (iconSource === undefined) {
-      iconSource = require('../../assets/league-placeholder-logo.png');
+      iconSource = require('../../assets/league-placeholder-logo.png'); // eslint-disable-line global-require
     } else {
       iconSource = { uri: iconSource };
     }
 
-    const title = this.props.title;
-    const webSiteURL = this.props.websiteURL;
+    const { title, websiteURL } = this.props;
     return (
-      <TouchableOpacity onPress={this._onPressItem.bind(this)}>
+      <TouchableOpacity onPress={this.onPressItem}>
         <Image style={styles.leagueIcon} source={iconSource} />
         <Text>
           {title}
         </Text>
 
-        {webSiteURL !== null
+        {websiteURL !== null
                     && (
                     <Text>
-                      {`Website: ${webSiteURL}`}
+                      {`Website: ${websiteURL}`}
                     </Text>
                     )
                 }
